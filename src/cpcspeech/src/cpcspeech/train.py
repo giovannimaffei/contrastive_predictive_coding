@@ -14,7 +14,7 @@ class Training():
         self.valid_dataloader = valid_dataloader
         self.device = device
         self.gpu = False
-        if device == 'gpu':
+        if device.type == 'cuda':
             self.gpu=True
 
 
@@ -128,22 +128,22 @@ class Training():
 class Spk_Training():
 
 
-    def __init__(self, cpc_model, spk_model, loss, optimizer, train_dataloader, valid_dataloader, device):
+    def __init__(self, cpc_model, spk_model, loss, optimizer, device):
 
         self.cpc_model = cpc_model
         self.spk_model = spk_model
         self.optimizer = optimizer
         self.loss = loss
-        self.train_dataloader = train_dataloader
-        self.valid_dataloader = valid_dataloader
+        # self.train_dataloader = train_dataloader
+        # self.valid_dataloader = valid_dataloader
         self.device = device
         self.gpu = False
-        if device == 'gpu':
+        if device.type == 'cuda':
             self.gpu=True
 
 
 
-    def train_epoch(self):
+    def train_epoch(self, train_dataloader):
 
         self.cpc_model.eval()
         self.spk_model.train()
@@ -151,7 +151,7 @@ class Spk_Training():
         total_acc = 0
         total_loss = 0
 
-        for b_idx, batch in enumerate(self.train_dataloader):
+        for b_idx, batch in enumerate(train_dataloader):
          
             spk_data = batch[0]
             batch_size = spk_data.size()[0]
@@ -159,7 +159,7 @@ class Spk_Training():
 
             hidden = self.cpc_model.initialize_hidden(batch_size,gpu=self.gpu)
             cpc_embedding, hidden = self.cpc_model.predict(spk_data,hidden)
-            cpc_embedding = cpc_embedding.contiguous().view((-1,256)) # emb_size = hidden.size()[1]?
+            cpc_embedding = cpc_embedding.contiguous().view((-1,cpc_embedding.size(1)))
 
             spk_target = batch[1]
             spk_target = spk_target.to(self.device)
@@ -185,15 +185,15 @@ class Spk_Training():
             
     #         print(spk_loss.item())
             
-        total_acc /= len(self.train_dataloader.dataset)
-        total_loss /= len(self.train_dataloader.dataset)
+        total_loss /= len(train_dataloader)
+        total_acc /= 1.*len(train_dataloader)
 
         
         # return spk_loss, acc
         return total_loss, total_acc
 
 
-    def validation_epoch(self):
+    def validation_epoch(self,valid_dataloader):
 
         self.cpc_model.eval()
         self.spk_model.eval()
@@ -202,7 +202,7 @@ class Spk_Training():
         total_loss = 0
         
         with torch.no_grad():
-            for b_idx, batch in enumerate(self.valid_dataloader):
+            for b_idx, batch in enumerate(valid_dataloader):
 
                 spk_data = batch[0]
                 batch_size = spk_data.size()[0]
@@ -210,7 +210,7 @@ class Spk_Training():
 
                 hidden = self.cpc_model.initialize_hidden(batch_size, gpu=self.gpu)
                 cpc_embedding, hidden = self.cpc_model.predict(spk_data,hidden)
-                cpc_embedding = cpc_embedding.contiguous().view((-1,256)) # emb_size = hidden.size()[1]?
+                cpc_embedding = cpc_embedding.contiguous().view((-1,cpc_embedding.size(1)))
 
                 spk_target = batch[1]
                 spk_target = spk_target.to(self.device)
@@ -219,24 +219,24 @@ class Spk_Training():
                 
                 pred = out.max(1, keepdim=True)[1]
                 correct = pred.eq(spk_target.view_as(pred))
-                acc = correct.sum().item()
+                acc = correct.sum().item()/len(spk_data)
                 
                 # spk_loss = F.nll_loss(out,spk_target).item()
                 spk_loss = self.loss(out,spk_target).item()
                 
-                total_loss+=spk_loss
+                total_loss += spk_loss
                 total_acc += acc
 
 
-        total_loss /= len(self.valid_dataloader.dataset)
-        total_acc  /= 1.*len(self.valid_dataloader.dataset) 
+        total_loss /= len(valid_dataloader)
+        total_acc  /= 1.*len(valid_dataloader) 
 
         
         # return spk_loss, acc
         return total_loss, total_acc
 
 
-    def train(self, n_epochs, early_stop_epochs=20, plot=False):
+    def train(self, train_dataloader, valid_dataloader, n_epochs, early_stop_epochs=20, plot=False):
 
         best_valid_loss = 1000
         early_stop_counter = 0
@@ -250,8 +250,8 @@ class Spk_Training():
 
         for epoch in range(n_epochs):
 
-            train_loss, train_acc = self.train_epoch()
-            valid_loss, valid_acc = self.validation_epoch()
+            train_loss, train_acc = self.train_epoch(train_dataloader)
+            valid_loss, valid_acc = self.validation_epoch(valid_dataloader)
             
             train_loss_s.append(train_loss)
             valid_loss_s.append(valid_loss)
