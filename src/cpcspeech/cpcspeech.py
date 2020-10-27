@@ -1,7 +1,7 @@
-from data import Simple_dataset, LibriSpeech100_dataset
-from train import Training
+from cpcspeech.data import Simple_dataset, LibriSpeech100_dataset
+from cpcspeech.train import Training
 from torch.utils.data import DataLoader
-from models import CPC
+from cpcspeech.models import CPC
 import torch
 import torch.optim as optim
 import numpy as np

@@ -2,7 +2,7 @@
 
 ## >> UNDER CONSTRUCTION <<
 
-![TSNE visualization of speech embeddings obtained with CPC](images/tsne.jpg)
+![TSNE visualization of speech embeddings obtained with CPC](img/tsne.png)
 
 Python package to extract embeddings from natural speech through contrastive predictive coding. The method is based on the paper 
 "Representation Learning with Contrastive Predictive Coding", van den Oord et al., 2019. The embeddings can be used for analysis and downstream classification tasks invlving speech signals.
@@ -17,7 +17,7 @@ A challenge of this approach is that predicting future steps <img src="https://r
 
 Instead of using a generative approach, CPC turns the problem into a classification task. This can be done by training the network to classify the next steps in an input sequence against a set of negative examples drawn randomly from the same distribution <img src="https://render.githubusercontent.com/render/math?math=P(x_{t+k})">. The key intuition is that instead of optimizing <img src="https://render.githubusercontent.com/render/math?math=P(x_{t+k}|c_{t})"> directly, we learn to maximize a quantity <img src="https://render.githubusercontent.com/render/math?math=f(x,c)"> that is a density ratio proportional to <img src="https://render.githubusercontent.com/render/math?math=P(x_{t+k}|c_t) / P(x_{t+k})"> and that maximally preserves the mutual information <img src="https://render.githubusercontent.com/render/math?math=I(c,x)"> between <img src="https://render.githubusercontent.com/render/math?math=c"> and <img src="https://render.githubusercontent.com/render/math?math=x">. For a formal demonstartion see original paper. 
 
-![overview from Van den Oord (2019)](images/overview.jpg)
+![overview from Van den Oord (2019)](img/overview.png)
 
 Here are the main steps:
 
@@ -68,16 +68,16 @@ This will create 3 separate .h5 files containing the preprocessed data for train
 
 The model was trained until convergence using Adam optimizer in bathces of 8 samples (1 positive sample and 7 negative ones) on a Nvidia GTX 1080 TI GPU
 
-![convergence of CPC on unspervised task](images/valid_loss.jpg)
+![convergence of CPC on unspervised task](img/valid_loss.png)
 
 Test loss: xx
 
 As proposed in the original paper, to test the use of the acquired latent representations we use the speech embeddings obtained through the CPC model to train a multi layer perceptron (MLP) on a speaker classification. Here we achieve the following performance:
 
-![convergence of MLP model on speaker classification](images/valid_loss_spk.jpg)
+![convergence of MLP model on speaker classification](img/valid_loss_spk.png)
 
-Test loss: xx
-Test acc: xx
+Test loss: 0.2529
+Test acc: 0.9506
 
 
 
