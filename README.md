@@ -70,7 +70,7 @@ The model was trained until convergence using Adam optimizer in bathces of 8 sam
 
 ![convergence of CPC on unspervised task](img/valid_loss.png)
 
-Test loss: xx
+Test loss: 0.2415
 
 As proposed in the original paper, to test the use of the acquired latent representations we use the speech embeddings obtained through the CPC model to train a multi layer perceptron (MLP) on a speaker classification. Here we achieve the following performance:
 
@@ -138,6 +138,8 @@ python -c 'import cpcspeech'
 ### Resources
 
 ["Representation Learning with Contrastive Predictive Coding", van den Oord et al., 2019](https://arxiv.org/pdf/1807.03748v2.pdf)
+
 [Journal club slides from Hugging Face](https://docs.google.com/presentation/d/1qxt7otjFI8iQSCpwzwTNei4_n4e4CIczC6nwy3jdiJY/edit#slide=id.p)
+
 [Jefflai implementation](https://github.com/jefflai108/Contrastive-Predictive-Coding-PyTorch)
 
