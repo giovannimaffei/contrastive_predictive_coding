@@ -1,6 +1,0 @@
-h5py
-matplotlib
-numpy
-SoundFile==0.10.3.post1
-torch
-scikit-learn
