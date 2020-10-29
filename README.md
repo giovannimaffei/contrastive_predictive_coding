@@ -1,11 +1,9 @@
 # Speech embeddings with Contrastive Predictive Coding
 
-## >> UNDER CONSTRUCTION <<
-
 ![TSNE visualization of speech embeddings obtained with CPC](img/tsne.png)
 
 Python package to extract embeddings from natural speech through contrastive predictive coding. The method is based on the paper 
-"Representation Learning with Contrastive Predictive Coding", van den Oord et al., 2019. The embeddings can be used for analysis and downstream classification tasks invlving speech signals.
+["Representation Learning with Contrastive Predictive Coding", van den Oord et al., 2019](https://arxiv.org/pdf/1807.03748v2.pdf). The embeddings can be used for analysis and downstream classification tasks invlving speech signals.
 
 ### Key intuition of CPC
 
@@ -76,8 +74,8 @@ As proposed in the original paper, to test the use of the acquired latent repres
 
 ![convergence of MLP model on speaker classification](img/valid_loss_spk.png)
 
-Test loss: 0.2529
-Test acc: 0.9506
+Test loss: 0.1681
+Test acc: 0.9575
 
 
 
