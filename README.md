@@ -114,7 +114,7 @@ cpc.train(100,plot=True)
 
 **train a speaker classifier**
 
-see notebooks/xyz.ipynb
+see notebooks/cpcspeech_usage_examples.ipynb
 
 
 ### Installation
