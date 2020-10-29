@@ -17,6 +17,11 @@ class Training():
         if device.type == 'cuda':
             self.gpu=True
 
+        self.train_loss_hist = []
+        self.valid_loss_hist = []
+        self.train_acc_hist = []
+        self.valid_acc_hist = []
+
 
     def train_epoch(self):
 
@@ -72,19 +77,16 @@ class Training():
         best_valid_loss = 1000
         early_stop_counter = 0
 
-        train_loss_s = []
-        valid_loss_s = []
-
-
         for epoch in range(n_epochs):
 
             train_loss, train_acc = self.train_epoch()
             valid_loss, valid_acc = self.validation_epoch()
             
-            train_loss_s.append(train_loss)
-            valid_loss_s.append(valid_loss)
+            self.train_loss_hist.append(train_loss)
+            self.valid_loss_hist.append(valid_loss)
+            self.train_acc_hist.append(train_acc)
+            self.valid_acc_hist.append(valid_acc)
             
-
             # if best_valid_loss == None:
             #     best_valid_loss = valid_loss
 
@@ -103,20 +105,21 @@ class Training():
             print('valid loss: {0}'.format(valid_loss))
             print('best valid loss: {0}'.format(best_valid_loss))
             
-            plt.subplot(2,1,1)
-            plt.plot(train_loss_s,'r-o')
-            plt.plot(valid_loss_s,'b-o')
-            
-            plt.subplot(2,1,2)
-            plt.plot(np.mean(train_acc,0),'r-o')
-            plt.ylabel('mean accuracy')
-            plt.xlabel('time steps')
-
-            plt.plot(np.mean(valid_acc,0),'b-o')
-            plt.ylabel('mean accuracy')
-            plt.xlabel('time steps')
-            
-            plt.show()
+            if plot:
+                
+                plt.subplot(2,1,1)
+                plt.plot(self.train_loss_hist,'r-o')
+                plt.plot(self.valid_loss_hist,'b-o')
+                plt.ylabel('loss')
+                plt.xlabel('epoch')
+                
+                plt.subplot(2,1,2)
+                plt.plot(np.mean(train_acc,0),'r-o')
+                plt.plot(np.mean(valid_acc,0),'b-o')
+                plt.ylabel('mean accuracy')
+                plt.xlabel('time steps')
+                
+                plt.show()
             
             
             if early_stop_counter >= early_stop_epochs:
@@ -140,6 +143,11 @@ class Spk_Training():
         self.gpu = False
         if device.type == 'cuda':
             self.gpu=True
+
+        self.train_loss_hist = []
+        self.valid_loss_hist = []
+        self.train_acc_hist = []
+        self.valid_acc_hist = []
 
 
 
@@ -252,12 +260,12 @@ class Spk_Training():
 
             train_loss, train_acc = self.train_epoch(train_dataloader)
             valid_loss, valid_acc = self.validation_epoch(valid_dataloader)
-            
-            train_loss_s.append(train_loss)
-            valid_loss_s.append(valid_loss)
 
-            train_acc_s.append(train_acc)
-            valid_acc_s.append(valid_acc)
+
+            self.train_loss_hist.append(train_loss)
+            self.valid_loss_hist.append(valid_loss)
+            self.train_acc_hist.append(train_acc)
+            self.valid_acc_hist.append(valid_acc)
             
 
             # if best_valid_loss == None:
@@ -280,18 +288,22 @@ class Spk_Training():
 
             print('train accuracy: {0}'.format(train_acc))
             print('valid accuracy: {0}'.format(valid_acc))
-            
-            plt.subplot(2,1,1)
-            plt.plot(train_loss_s,'r-o')
-            plt.plot(valid_loss_s,'b-o')
-            
-            plt.subplot(2,1,2)
-            plt.plot(train_acc_s,'r-o')
-            plt.plot(valid_acc_s,'b-o')
-            plt.ylabel('mean accuracy')
-            plt.xlabel('time steps')
-            
-            plt.show()
+
+            if plot:
+
+                plt.subplot(2,1,1)
+                plt.plot(self.train_loss_hist,'r-o')
+                plt.plot(self.valid_loss_hist,'b-o')
+                plt.ylabel('loss')
+                plt.xlabel('epoch')
+                
+                plt.subplot(2,1,2)
+                plt.plot(self.train_acc_hist,'r-o')
+                plt.plot(self.valid_acc_hist,'b-o')
+                plt.ylabel('accuracy')
+                plt.xlabel('epoch')
+                
+                plt.show()
             
             
             if early_stop_counter >= early_stop_epochs:

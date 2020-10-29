@@ -95,7 +95,7 @@ class CPC(torch.nn.Module):
 #         print('random time sample: ',t)
         
         c_t = z[:,:t,:]
-        c_t, hidden = self.g_ar(c_t)
+        c_t, hidden = self.g_ar(c_t,hidden)
         c_t = c_t[:,t-1,:].view(batch_size, 256)
 
         loss = 0
