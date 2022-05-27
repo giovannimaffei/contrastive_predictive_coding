@@ -81,5 +81,3 @@ class CPC_speech:
 
 			audio_embedding_s = np.vstack(audio_embedding_s)
 			return audio_embedding_s
-
-
